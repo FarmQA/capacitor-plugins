@@ -227,6 +227,16 @@ export interface Photo {
    * @since 1.1.0
    */
   saved: boolean;
+  /**
+   * If using the CameraREsultType.Uri, the path will contain a full,
+   * platform-specific file URL that can be read later usijng the Filesystem API.
+   */
+  thumbnailPath?: string;
+  /**
+   * webThumbnailPath returns a path that can be used to set the src attribute of an image for efficient
+   * loading and rendering
+   */
+  webThumbnailPath?: string;
 }
 
 export interface GalleryPhotos {

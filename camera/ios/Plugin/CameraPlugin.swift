@@ -9,10 +9,11 @@ public class CameraPlugin: CAPPlugin {
     private var settings = CameraSettings()
     private let defaultSource = CameraSource.prompt
     private let defaultDirection = CameraDirection.rear
+    private let defaultDirectory = FileSystemDirectory.cache
     private var multiple = false
-
+    
     private var imageCounter = 0
-
+    
     @objc override public func checkPermissions(_ call: CAPPluginCall) {
         var result: [String: Any] = [:]
         for permission in CameraPermissionType.allCases {
@@ -110,16 +111,26 @@ public class CameraPlugin: CAPPlugin {
     }
 
     private func cameraSettings(from call: CAPPluginCall) -> CameraSettings {
+        let defaultFileUUID = UUID().uuidString.lowercased()
         var settings = CameraSettings()
         settings.jpegQuality = min(abs(CGFloat(call.getFloat("quality") ?? 100.0)) / 100.0, 1.0)
         settings.allowEditing = call.getBool("allowEditing") ?? false
         settings.source = CameraSource(rawValue: call.getString("source") ?? defaultSource.rawValue) ?? defaultSource
-        settings.direction = CameraDirection(rawValue: call.getString("direction") ?? defaultDirection.rawValue) ?? defaultDirection
+        settings.direction = CameraDirection(rawValue: call.getString("direction") ?? defaultDirection.rawValue) ?? defaultDirection)
+
         if let typeString = call.getString("resultType"), let type = CameraResultType(rawValue: typeString) {
             settings.resultType = type
         }
         settings.saveToGallery = call.getBool("saveToGallery") ?? false
-
+        settings.shouldCreateThumbnail = call.getBool("shouldCreateThumbnail") ?? false
+        settings.thumbnailHeight = CGFloat(call.getInt("thumbnailHeight") ?? 0)
+        settings.thumbnailWidth = CGFloat(call.getInt("thumbnailWidth") ?? 0)
+        if settings.thumbnailHeight > 0 || settings.thumbnailWidth > 0 {
+            settings.shouldCreateThumbnail = true
+        }
+        settings.resultDirectory = FileSystemDirectory(rawValue: call.getString("resultsDirectory") ?? defaultDirectory.rawValue) ?? defaultDirectory
+        settings.resultFilename = call.getString("resultFilename") ?? "photo_\(defaultFileUUID).jpg"
+        settings.thumnailFilename = call.getString("thumbnailFilename") ?? "photo_\(defaultFileUUID)_tn.jpg"
         // Get the new image dimensions if provided
         settings.width = CGFloat(call.getInt("width") ?? 0)
         settings.height = CGFloat(call.getInt("height") ?? 0)
@@ -247,7 +258,7 @@ private extension CameraPlugin {
                         "path": fileURL.absoluteString,
                         "exif": processedImage.exifData,
                         "webPath": webURL.absoluteString,
-                        "format": "jpeg"
+ß                       "format": "jpeg"
                     ]]
                 ])
                 return
@@ -493,6 +504,9 @@ private extension CameraPlugin {
             // resizing implicitly reformats the image so this is only needed if we aren't resizing
             result.image = result.image.reformat()
             result.overwriteMetadataOrientation(to: 1)
+        }
+        if settings.shouldCreateThumbnail {
+            result.thumbnail = result.generateThumbnail(settings.quality, CGSize(width: settings.thumbnailWidth, height: settings.thumbnailHeight))
         }
         return result
     }

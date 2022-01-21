@@ -19,6 +19,14 @@ public enum CameraResultType: String {
     case dataURL = "dataUrl"
 }
 
+public enum FileSystemDirectory: String {
+    case documents = "DOCUMENTS"
+    case data = "DATA"
+    case cache = "CACHE"
+    case external = "EXTERNAL"
+    case external_storage = "EXTERNAL_STORAGE"
+}
+
 struct CameraPromptText {
     let title: String
     let photoAction: String
@@ -46,6 +54,10 @@ public struct CameraSettings {
     var shouldCorrectOrientation = true
     var saveToGallery = false
     var presentationStyle = UIModalPresentationStyle.fullScreen
+    var shouldCreateThumbnail = false
+    var thumbnailFilename: String = "_tn"
+    var thumbnailWidth: CGFloat = 0
+    var thumbnailHeight: CGFloat = 0
 }
 
 public struct CameraResult {
@@ -138,5 +150,12 @@ internal struct ProcessedImage {
             return data
         }
         return output as Data
+    }
+
+    func generateThumbnail(with quality: CGFloat, _ size: CGSize) -> Data? {
+        guard let convertedImage = self.image.reformat(to: size).generateJPEG(with: quality) {
+            return nil
+        }
+        return convertedImage as Data
     }
 }

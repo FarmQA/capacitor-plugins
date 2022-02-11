@@ -293,13 +293,13 @@ public class CameraPlugin extends Plugin {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple);
             intent.setType("image/*");
             try {
-                if (multiple) {
-                    intent.putExtra("multi-pick", multiple);
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] { "image/*" });
-                    startActivityForResult(call, intent, "processPickedImages");
-                } else {
+//                if (multiple) {
+//                    intent.putExtra("multi-pick", multiple);
+//                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] { "image/*" });
+//                    startActivityForResult(call, intent, "processPickedImages");
+//                } else {
                     startActivityForResult(call, intent, "processPickedImage");
-                }
+//                }
             } catch (ActivityNotFoundException ex) {
                 call.reject(NO_PHOTO_ACTIVITY_ERROR);
             }

@@ -181,7 +181,6 @@ export interface ImageOptions {
    * iOS and Android only: The image filename when saving to the Data directory.
    */
    resultFilename?: string;
-
   /**
    * iOS and Android only: Whether to create a thumbnail image in the Data directory.
    */
@@ -190,10 +189,6 @@ export interface ImageOptions {
     * iOS and Android only: The thumbnail filename when saving to the Data directory.
     */
    thumbnailFilename?: string;
-   /**
-    * iOS and Android only: The quality of the thumbnail to return as JPEG, from 0-100.
-    */
-   thumbnailQuality?: number;
    /**
     * iOS and Android only: The width of the thumbnail image.
     */

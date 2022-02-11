@@ -278,7 +278,13 @@ public class CameraPlugin extends Plugin {
     }
 
     public void openPhotos(final PluginCall call) {
+<<<<<<< HEAD
         openPhotos(call, false, false);
+=======
+        // FarmQA: Multiple photo selection is disabled.
+        // FarmQA: If/when enabled, the filename settings won't work.
+        openPhotos(call, false);
+>>>>>>> 761fd5f213e28eef8cf350dc2cfd23f2a7537105
     }
 
     private void openPhotos(final PluginCall call, boolean multiple, boolean skipPermission) {
@@ -337,7 +343,6 @@ public class CameraPlugin extends Plugin {
         processPickedImage(u, call);
     }
 
-    /*
     @ActivityCallback
     public void processPickedImages(PluginCall call, ActivityResult result) {
         Intent data = result.getData();
@@ -400,7 +405,6 @@ public class CameraPlugin extends Plugin {
             call.reject("No images picked");
         }
     }
-    */
 
     private void processPickedImage(Uri imageUri, PluginCall call) {
         InputStream imageStream = null;
@@ -430,7 +434,6 @@ public class CameraPlugin extends Plugin {
         }
     }
 
-    /*
     private JSObject processPickedImages(Uri imageUri) {
         InputStream imageStream = null;
         JSObject ret = new JSObject();
@@ -481,7 +484,6 @@ public class CameraPlugin extends Plugin {
         }
         return ret;
     }
-    */
 
     @ActivityCallback
     private void processEditedImage(PluginCall call, ActivityResult result) {

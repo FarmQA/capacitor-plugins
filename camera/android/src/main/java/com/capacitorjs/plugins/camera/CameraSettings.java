@@ -21,7 +21,6 @@ public class CameraSettings {
     private String resultFilename;
     private boolean createThumbnail = false;
     private String thumbnailFilename;
-    private int thumbnailQuality = DEFAULT_QUALITY;
     private int thumbnailWidth = 70;
     private int thumbnailHeight = 70;
     // FarmQA end
@@ -141,14 +140,6 @@ public class CameraSettings {
 
     public void setThumbnailHeight(int height) {
         this.thumbnailHeight = height;
-    }
-
-    public int getThumbnailQuality() {
-        return this.thumbnailQuality;
-    }
-
-    public void setThumbnailQuality(int quality) {
-        this.thumbnailQuality = quality;
     }
     // FarmQA end
 }

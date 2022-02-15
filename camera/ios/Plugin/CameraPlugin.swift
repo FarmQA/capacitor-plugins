@@ -116,21 +116,12 @@ public class CameraPlugin: CAPPlugin {
         settings.jpegQuality = min(abs(CGFloat(call.getFloat("quality") ?? 100.0)) / 100.0, 1.0)
         settings.allowEditing = call.getBool("allowEditing") ?? false
         settings.source = CameraSource(rawValue: call.getString("source") ?? defaultSource.rawValue) ?? defaultSource
-        settings.direction = CameraDirection(rawValue: call.getString("direction") ?? defaultDirection.rawValue) ?? defaultDirection)
+        settings.direction = CameraDirection(rawValue: call.getString("direction") ?? defaultDirection.rawValue) ?? defaultDirection
 
         if let typeString = call.getString("resultType"), let type = CameraResultType(rawValue: typeString) {
             settings.resultType = type
         }
         settings.saveToGallery = call.getBool("saveToGallery") ?? false
-        settings.shouldCreateThumbnail = call.getBool("shouldCreateThumbnail") ?? false
-        settings.thumbnailHeight = CGFloat(call.getInt("thumbnailHeight") ?? 0)
-        settings.thumbnailWidth = CGFloat(call.getInt("thumbnailWidth") ?? 0)
-        if settings.thumbnailHeight > 0 || settings.thumbnailWidth > 0 {
-            settings.shouldCreateThumbnail = true
-        }
-        settings.resultDirectory = FileSystemDirectory(rawValue: call.getString("resultsDirectory") ?? defaultDirectory.rawValue) ?? defaultDirectory
-        settings.resultFilename = call.getString("resultFilename") ?? "photo_\(defaultFileUUID).jpg"
-        settings.thumnailFilename = call.getString("thumbnailFilename") ?? "photo_\(defaultFileUUID)_tn.jpg"
         // Get the new image dimensions if provided
         settings.width = CGFloat(call.getInt("width") ?? 0)
         settings.height = CGFloat(call.getInt("height") ?? 0)
@@ -149,6 +140,18 @@ public class CameraPlugin: CAPPlugin {
             settings.presentationStyle = .fullScreen
         }
 
+        // FarmQA
+        settings.createThumbnail = call.getBool("createThumbnail") ?? false
+        settings.thumbnailHeight = CGFloat(call.getInt("thumbnailHeight") ?? 0)
+        settings.thumbnailWidth = CGFloat(call.getInt("thumbnailWidth") ?? 0)
+        if settings.thumbnailHeight > 0 || settings.thumbnailWidth > 0 {
+            settings.createThumbnail = true
+        }
+        settings.saveToDataDirectory = call.getBool("saveToDataDirectory") ?? false
+        settings.resultFilename = call.getString("resultFilename") ?? "JPEG_\(defaultFileUUID).jpg"
+        settings.thumbnailFilename = call.getString("thumbnailFilename") ?? "JPEG_\(defaultFileUUID)_tn.jpg"
+        // FarmQA
+        
         return settings
     }
 }
@@ -246,7 +249,8 @@ private extension CameraPlugin {
             return
         }
 
-        if settings.resultType == CameraResultType.uri || multiple {
+        if !settings.saveToDataDirectory && settings.resultType == CameraResultType.uri || multiple {
+            
             guard let fileURL = try? saveTemporaryImage(jpeg),
                   let webURL = bridge?.portablePath(fromLocalURL: fileURL) else {
                 call?.reject("Unable to get portable path to file")
@@ -258,7 +262,7 @@ private extension CameraPlugin {
                         "path": fileURL.absoluteString,
                         "exif": processedImage.exifData,
                         "webPath": webURL.absoluteString,
-ß                       "format": "jpeg"
+                        "format": "jpeg"
                     ]]
                 ])
                 return
@@ -270,6 +274,34 @@ private extension CameraPlugin {
                 "format": "jpeg",
                 "saved": isSaved
             ])
+        } else if settings.saveToDataDirectory {
+            do {
+                let documentDirectory = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                let imageFilename = documentDirectory.appendingPathComponent(settings.resultFilename)
+                let webURL = bridge?.portablePath(fromLocalURL: imageFilename)
+                let thumbnailFilename = documentDirectory.appendingPathComponent(settings.thumbnailFilename)
+                let thumbnailWebPath = bridge?.portablePath(fromLocalURL: thumbnailFilename)
+
+                try saveImage(jpeg, atPath: imageFilename)
+                
+                if settings.createThumbnail {
+                    if let jpegThumbnail = processedImage.generateThumbnail(with: settings.jpegQuality, CGSize(width: settings.width, height: settings.height)) {
+                        let _ = try saveImage(jpegThumbnail, atPath: thumbnailFilename)
+                    }
+                }
+                call?.resolve([
+                    "path": imageFilename.absoluteString,
+                    "exif": processedImage.exifData,
+                    "webPath": webURL?.absoluteString ?? "",
+                    "thumnailPath": thumbnailFilename,
+                    "thumbnailWebPath": thumbnailWebPath ?? "",
+                    "format": "jpeg",
+                    "saved": isSaved
+                ])
+            } catch {
+                call?.reject("Trouble saving image to DATA directory")
+                return
+            }
         } else if settings.resultType == CameraResultType.base64 {
             self.call?.resolve([
                 "base64String": jpeg.base64EncodedString(),
@@ -465,6 +497,12 @@ private extension CameraPlugin {
         return url
     }
 
+    // Begin FarmQA
+    func saveImage(_ data: Data, atPath path: URL) throws {
+        try data.write(to: path, options: .atomic)
+    }
+    // End FarmQA
+    
     func processImage(from info: [UIImagePickerController.InfoKey: Any]) -> ProcessedImage? {
         var selectedImage: UIImage?
         var flags: PhotoFlags = []
@@ -504,9 +542,6 @@ private extension CameraPlugin {
             // resizing implicitly reformats the image so this is only needed if we aren't resizing
             result.image = result.image.reformat()
             result.overwriteMetadataOrientation(to: 1)
-        }
-        if settings.shouldCreateThumbnail {
-            result.thumbnail = result.generateThumbnail(settings.quality, CGSize(width: settings.thumbnailWidth, height: settings.thumbnailHeight))
         }
         return result
     }

@@ -54,10 +54,14 @@ public struct CameraSettings {
     var shouldCorrectOrientation = true
     var saveToGallery = false
     var presentationStyle = UIModalPresentationStyle.fullScreen
-    var shouldCreateThumbnail = false
-    var thumbnailFilename: String = "_tn"
-    var thumbnailWidth: CGFloat = 0
-    var thumbnailHeight: CGFloat = 0
+    // FarmQA begin
+    var saveToDataDirectory = false
+    var resultFilename: String = ""
+    var createThumbnail = false
+    var thumbnailFilename: String = ""
+    var thumbnailWidth: CGFloat = 70
+    var thumbnailHeight: CGFloat = 70
+    // FarmQA end
 }
 
 public struct CameraResult {
@@ -152,10 +156,12 @@ internal struct ProcessedImage {
         return output as Data
     }
 
+    // Begin FarmQA
     func generateThumbnail(with quality: CGFloat, _ size: CGSize) -> Data? {
-        guard let convertedImage = self.image.reformat(to: size).generateJPEG(with: quality) {
+        guard let convertedImage = self.image.reformat(to: size).jpegData(compressionQuality: quality) else {
             return nil
         }
-        return convertedImage as Data
+        return convertedImage
     }
+    // End FarmQA
 }

@@ -19,14 +19,6 @@ public enum CameraResultType: String {
     case dataURL = "dataUrl"
 }
 
-public enum FileSystemDirectory: String {
-    case documents = "DOCUMENTS"
-    case data = "DATA"
-    case cache = "CACHE"
-    case external = "EXTERNAL"
-    case external_storage = "EXTERNAL_STORAGE"
-}
-
 struct CameraPromptText {
     let title: String
     let photoAction: String

@@ -11,7 +11,6 @@ public class CameraPlugin: CAPPlugin {
     private let defaultDirection = CameraDirection.rear
     private let defaultDirectory = FileSystemDirectory.cache
     private var multiple = false
-    
     private var imageCounter = 0
     
     @objc override public func checkPermissions(_ call: CAPPluginCall) {
@@ -142,11 +141,8 @@ public class CameraPlugin: CAPPlugin {
 
         // FarmQA
         settings.createThumbnail = call.getBool("createThumbnail") ?? false
-        settings.thumbnailHeight = CGFloat(call.getInt("thumbnailHeight") ?? 0)
-        settings.thumbnailWidth = CGFloat(call.getInt("thumbnailWidth") ?? 0)
-        if settings.thumbnailHeight > 0 || settings.thumbnailWidth > 0 {
-            settings.createThumbnail = true
-        }
+        settings.thumbnailHeight = CGFloat(call.getInt("thumbnailHeight") ?? 70)
+        settings.thumbnailWidth = CGFloat(call.getInt("thumbnailWidth") ?? 70)
         settings.saveToDataDirectory = call.getBool("saveToDataDirectory") ?? false
         settings.resultFilename = call.getString("resultFilename") ?? "JPEG_\(defaultFileUUID).jpg"
         settings.thumbnailFilename = call.getString("thumbnailFilename") ?? "JPEG_\(defaultFileUUID)_tn.jpg"
@@ -249,7 +245,7 @@ private extension CameraPlugin {
             return
         }
 
-        if !settings.saveToDataDirectory && settings.resultType == CameraResultType.uri || multiple {
+        if (!settings.saveToDataDirectory && settings.resultType == CameraResultType.uri) || multiple {
             
             guard let fileURL = try? saveTemporaryImage(jpeg),
                   let webURL = bridge?.portablePath(fromLocalURL: fileURL) else {

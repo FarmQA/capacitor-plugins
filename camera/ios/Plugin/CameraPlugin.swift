@@ -280,12 +280,12 @@ private extension CameraPlugin {
                 let imageFilename = documentDirectory.appendingPathComponent(settings.resultFilename)
                 let webURL = bridge?.portablePath(fromLocalURL: imageFilename)
                 let thumbnailFilename = documentDirectory.appendingPathComponent(settings.thumbnailFilename)
-                let thumbnailWebPath = bridge?.portablePath(fromLocalURL: thumbnailFilename)
-
+                let thumbnailWebURL = bridge?.portablePath(fromLocalURL: thumbnailFilename)
+                
                 try saveImage(jpeg, atPath: imageFilename)
                 
                 if settings.createThumbnail {
-                    if let jpegThumbnail = processedImage.generateThumbnail(with: settings.jpegQuality, CGSize(width: settings.width, height: settings.height)) {
+                    if let jpegThumbnail = processedImage.generateThumbnail(with: settings.jpegQuality, CGSize(width: settings.thumbnailWidth, height: settings.thumbnailHeight)) {
                         let _ = try saveImage(jpegThumbnail, atPath: thumbnailFilename)
                     }
                 }
@@ -293,8 +293,8 @@ private extension CameraPlugin {
                     "path": imageFilename.absoluteString,
                     "exif": processedImage.exifData,
                     "webPath": webURL?.absoluteString ?? "",
-                    "thumnailPath": thumbnailFilename,
-                    "thumbnailWebPath": thumbnailWebPath ?? "",
+                    "thumbnailPath": thumbnailFilename.absoluteString,
+                    "thumbnailWebPath": thumbnailWebURL?.absoluteString ?? "",
                     "format": "jpeg",
                     "saved": isSaved
                 ])

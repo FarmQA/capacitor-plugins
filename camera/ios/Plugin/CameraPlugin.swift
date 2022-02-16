@@ -11,8 +11,9 @@ public class CameraPlugin: CAPPlugin {
     private let defaultDirection = CameraDirection.rear
     private let defaultDirectory = FileSystemDirectory.cache
     private var multiple = false
+
     private var imageCounter = 0
-    
+
     @objc override public func checkPermissions(_ call: CAPPluginCall) {
         var result: [String: Any] = [:]
         for permission in CameraPermissionType.allCases {
@@ -116,11 +117,11 @@ public class CameraPlugin: CAPPlugin {
         settings.allowEditing = call.getBool("allowEditing") ?? false
         settings.source = CameraSource(rawValue: call.getString("source") ?? defaultSource.rawValue) ?? defaultSource
         settings.direction = CameraDirection(rawValue: call.getString("direction") ?? defaultDirection.rawValue) ?? defaultDirection
-
         if let typeString = call.getString("resultType"), let type = CameraResultType(rawValue: typeString) {
             settings.resultType = type
         }
         settings.saveToGallery = call.getBool("saveToGallery") ?? false
+        
         // Get the new image dimensions if provided
         settings.width = CGFloat(call.getInt("width") ?? 0)
         settings.height = CGFloat(call.getInt("height") ?? 0)

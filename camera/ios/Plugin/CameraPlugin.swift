@@ -121,7 +121,7 @@ public class CameraPlugin: CAPPlugin {
             settings.resultType = type
         }
         settings.saveToGallery = call.getBool("saveToGallery") ?? false
-        
+
         // Get the new image dimensions if provided
         settings.width = CGFloat(call.getInt("width") ?? 0)
         settings.height = CGFloat(call.getInt("height") ?? 0)
@@ -247,7 +247,6 @@ private extension CameraPlugin {
         }
 
         if (!settings.saveToDataDirectory && settings.resultType == CameraResultType.uri) || multiple {
-            
             guard let fileURL = try? saveTemporaryImage(jpeg),
                   let webURL = bridge?.portablePath(fromLocalURL: fileURL) else {
                 call?.reject("Unable to get portable path to file")

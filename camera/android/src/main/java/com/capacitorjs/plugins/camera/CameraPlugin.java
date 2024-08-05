@@ -460,11 +460,6 @@ public class CameraPlugin extends Plugin {
         return bundle.getParcelableArrayList(key);
     }
 
-    @SuppressWarnings("deprecation")
-    private ArrayList<Parcelable> getLegacyParcelableArrayList(Bundle bundle, String key) {
-        return bundle.getParcelableArrayList(key);
-    }
-
     private void processPickedImage(Uri imageUri, PluginCall call) {
         InputStream imageStream = null;
 

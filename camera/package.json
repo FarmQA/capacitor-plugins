@@ -17,6 +17,10 @@
   ],
   "author": "Ionic <hi@ionicframework.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ionic-team/capacitor-plugins.git"
+  },
   "bugs": {
     "url": "https://github.com/ionic-team/capacitor-plugins/issues"
   },

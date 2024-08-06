@@ -23,6 +23,7 @@ public class CameraSettings {
     private String thumbnailFilename;
     private int thumbnailWidth = 70;
     private int thumbnailHeight = 70;
+
     // FarmQA end
 
     public CameraResultType getResultType() {
@@ -102,7 +103,9 @@ public class CameraSettings {
         return getResultType() == CameraResultType.URI && this.saveToDataDirectory;
     }
 
-    public void setSaveToDataDirectory(boolean saveToDataDirectory) { this.saveToDataDirectory = saveToDataDirectory; }
+    public void setSaveToDataDirectory(boolean saveToDataDirectory) {
+        this.saveToDataDirectory = saveToDataDirectory;
+    }
 
     public String getResultFilename() {
         return this.resultFilename;
@@ -116,7 +119,9 @@ public class CameraSettings {
         return this.createThumbnail && (this.thumbnailHeight > 0 || this.thumbnailWidth > 0);
     }
 
-    public void setCreateThumbnail(boolean createThumbnail) { this.createThumbnail = createThumbnail; }
+    public void setCreateThumbnail(boolean createThumbnail) {
+        this.createThumbnail = createThumbnail;
+    }
 
     public String getThumbnailFilename() {
         return this.thumbnailFilename;

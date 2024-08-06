@@ -51,10 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.UUID;
 import org.json.JSONException;
 
 /**
@@ -705,9 +705,7 @@ public class CameraPlugin extends Plugin {
     }
 
     private void returnFileURI(PluginCall call, ExifWrapper exif, Bitmap bitmap, Uri u, ByteArrayOutputStream bitmapOutputStream) {
-        Uri newUri = settings.getSaveToDataDirectory()
-            ? saveResultImage(bitmapOutputStream)
-            : getTempImage(u, bitmapOutputStream);
+        Uri newUri = settings.getSaveToDataDirectory() ? saveResultImage(bitmapOutputStream) : getTempImage(u, bitmapOutputStream);
         exif.copyExif(newUri.getPath());
         if (newUri != null) {
             JSObject ret = new JSObject();
@@ -949,7 +947,7 @@ public class CameraPlugin extends Plugin {
                 outputStream.close();
                 return Uri.fromFile(outputFile);
             } else {
-                Logger.error(getLogTag(),"Unable to create directory.", null);
+                Logger.error(getLogTag(), "Unable to create directory.", null);
             }
         } catch (Exception ex) {
             Logger.error(getLogTag(), IMAGE_FILE_SAVE_ERROR, ex);
@@ -973,14 +971,12 @@ public class CameraPlugin extends Plugin {
                 outputStream.close();
                 return Uri.fromFile(outputFile);
             } else {
-                Logger.error(getLogTag(),"Unable to create directory.", null);
+                Logger.error(getLogTag(), "Unable to create directory.", null);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Logger.error(getLogTag(), IMAGE_FILE_SAVE_ERROR, ex);
         }
         return null;
     }
-
     // End FarmQA
 }

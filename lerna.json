@@ -1,7 +1,4 @@
 {
-  "packages": [
-    "camera"
-  ],
   "command": {
     "bootstrap": {
       "ci": false,

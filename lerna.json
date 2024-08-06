@@ -1,8 +1,4 @@
 {
-  "packages": [
-    "camera",
-    "share"
-  ],
   "command": {
     "bootstrap": {
       "ci": false,
@@ -16,5 +12,6 @@
       "tagVersionPrefix": ""
     }
   },
-  "version": "independent"
+  "version": "independent",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

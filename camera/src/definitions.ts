@@ -188,23 +188,23 @@ export interface ImageOptions {
   /**
    * (FarmQA) iOS and Android only: The image filename when saving to the Data directory.
    */
-   resultFilename?: string;
+  resultFilename?: string;
   /**
    * (FarmQA) iOS and Android only: Whether to create a thumbnail image in the Data directory.
    */
-   createThumbnail?: boolean;
-   /**
-    * (FarmQA) iOS and Android only: The thumbnail filename when saving to the Data directory.
-    */
-   thumbnailFilename?: string;
-   /**
-    * (FarmQA) iOS and Android only: The width of the thumbnail image.
-    */
-   thumbnailWidth?: number;
-   /**
-    * (FarmQA) iOS and Android only: The height of the thumbnail image.
-    */
-   thumbnailHeight?: number;
+  createThumbnail?: boolean;
+  /**
+   * (FarmQA) iOS and Android only: The thumbnail filename when saving to the Data directory.
+   */
+  thumbnailFilename?: string;
+  /**
+   * (FarmQA) iOS and Android only: The width of the thumbnail image.
+   */
+  thumbnailWidth?: number;
+  /**
+   * (FarmQA) iOS and Android only: The height of the thumbnail image.
+   */
+  thumbnailHeight?: number;
 }
 
 export interface Photo {
@@ -350,7 +350,9 @@ export interface GalleryImageOptions {
   presentationStyle?: 'fullscreen' | 'popover';
 
   /**
-   * iOS only: Maximum number of pictures the user will be able to choose.
+   * Maximum number of pictures the user will be able to choose.
+   * Note: This option is only supported on Android 13+ and iOS.
+   *
    * @default 0 (unlimited)
    *
    * @since 1.2.0
